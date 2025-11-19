@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. 配置 Node.js (关键修改：升级到 20)
+    # 2. 配置 Node.js (保持版本 20)
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
@@ -26,7 +26,6 @@ jobs:
         cd frontend
         npm install
         npm run build
-        # 验证是否生成了 dist 文件夹
         dir dist
 
     # 4. 配置 Python
@@ -40,10 +39,14 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # 6. 使用 PyInstaller 打包 (注意：增加了 --clean 清理缓存)
+    # 6. 使用 PyInstaller 打包 (关键修改在此处)
+    # 修改说明：
+    # 1. --paths "backend": 告诉 Python 在 backend 目录下查找模块 (解决了 No module named 'models')
+    # 2. --add-data: 格式改为 Windows 风格的分号
+    # 3. --hidden-import: 显式强制引入 models 和 database
     - name: Build EXE with PyInstaller
       run: |
-        pyinstaller --noconfirm --onefile --windowed --clean --name "庆阳工学平台" --add-data "frontend/dist;frontend/dist" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
+        pyinstaller --noconfirm --onefile --windowed --clean --name "庆阳工学平台" --paths "backend" --add-data "frontend/dist;frontend/dist" --hidden-import "models" --hidden-import "database" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
 
     # 7. 上传生成的 EXE
     - name: Upload Artifact

@@ -3,7 +3,7 @@ name: Build Windows EXE
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch: # 允许手动点击触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,11 +14,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. 配置 Node.js (用于编译前端)
+    # 2. 配置 Node.js (关键修改：升级到 20)
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 20
 
     # 3. 编译前端 Vue
     - name: Build Frontend
@@ -26,10 +26,10 @@ jobs:
         cd frontend
         npm install
         npm run build
-        # 验证生成结果
+        # 验证是否生成了 dist 文件夹
         dir dist
 
-    # 4. 配置 Python (用于编译后端)
+    # 4. 配置 Python
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
@@ -40,14 +40,12 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    # 6. 使用 PyInstaller 打包
+    # 6. 使用 PyInstaller 打包 (注意：增加了 --clean 清理缓存)
     - name: Build EXE with PyInstaller
       run: |
-        # 这里的关键是 --add-data，把前端编译好的 dist 文件夹打入 exe 内部
-        # 格式：源路径;目标路径 (Windows下用分号)
-        pyinstaller --noconfirm --onefile --windowed --name "庆阳工学平台" --add-data "frontend/dist;frontend/dist" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
+        pyinstaller --noconfirm --onefile --windowed --clean --name "庆阳工学平台" --add-data "frontend/dist;frontend/dist" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
 
-    # 7. 上传生成的 EXE 供下载
+    # 7. 上传生成的 EXE
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:

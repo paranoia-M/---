@@ -4,12 +4,7 @@
     <el-aside width="240px" class="aside-container">
       <!-- 1. 品牌 Logo 区 -->
       <div class="brand-box">
-        <img
-          src="https://element-plus.org/images/element-plus-logo.svg"
-          alt="logo"
-          class="brand-logo"
-        />
-        <span class="brand-text">庆阳工学平台</span>
+        <span class="brand-text">校企实时对接数字化平台</span>
       </div>
 
       <!-- 2. 菜单区 -->

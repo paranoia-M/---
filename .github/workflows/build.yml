@@ -46,11 +46,11 @@ jobs:
     # 3. --hidden-import: 显式强制引入 models 和 database
     - name: Build EXE with PyInstaller
       run: |
-        pyinstaller --noconfirm --onefile --windowed --clean --name "庆阳工学平台" --paths "backend" --add-data "frontend/dist;frontend/dist" --hidden-import "models" --hidden-import "database" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
+        pyinstaller --noconfirm --onefile --windowed --clean --name "校企实时对接数字化平台" --paths "backend" --add-data "frontend/dist;frontend/dist" --hidden-import "models" --hidden-import "database" --hidden-import "uvicorn.logging" --hidden-import "uvicorn.loops" --hidden-import "uvicorn.loops.auto" --hidden-import "uvicorn.protocols" --hidden-import "uvicorn.protocols.http" --hidden-import "uvicorn.protocols.http.auto" --hidden-import "uvicorn.lifespan" --hidden-import "uvicorn.lifespan.on" backend/main.py
 
     # 7. 上传生成的 EXE
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Qingyang-Platform-Windows-EXE
-        path: dist/庆阳工学平台.exe
+        path: dist/校企实时对接数字化平台.exe
